@@ -117,9 +117,18 @@ register.setPalladiumValues = function(totalPrice, amount) {
     $('.palladiumprice span').text(totalPrice).digits();
     $('.palladiumprice').parent().attr('data-price', totalPrice);
     $(".final_plan").text('palladium');
-    $(".final_price").text(totalPrice).digits();
     $('.palladium-amount').text(amount);
     $('.plan-upgrade .plan .plan-holder[data-plan="palladium"]').trigger('click');
+    register.setValue('palladium');
+}
+
+register.resetPalladium = function () {
+    var totalPrice = 10000;
+    var amount = 1
+    $('.palladiumprice span').text(totalPrice).digits();
+    $('.palladiumprice').parent().attr('data-price', totalPrice);
+    $('.palladium-amount').text(amount);
+    palladiumAmount = 1;
 }
 
 register.toggleBillingAddress = function() {
@@ -208,12 +217,13 @@ register.setPage = function() {
     if(!isACustomer) {
         $('.have-the-book').hide();
         register.removeUploadField();
-
+        register.hideAmountAndDiscout();
     } else {
         $('.want-to-buy').hide();
         register.upgradePlan();
     }
 
+    register.setValue('bronze');
     register.showOrHidePayment();
     $('.plan-select').removeClass('hidden');
     $(".plan .plan-holder").click(register.changePlan);
@@ -230,12 +240,19 @@ register.upgradePlan = function () {
 register.changePlan = function() {
     $(".plan .plan-holder").removeClass("selected");
     $(this).addClass("selected");
+    
+    let plan_name = $(this).data("plan");
+    
+    $(".final_plan").text(plan_name);
+    
+    register.setValue(plan_name);
+
+    if(plan_name != 'palladium') register.resetPalladium();
 
     uploadRequired = true;
 
     if(isACustomer){
         let img = $(this).children("img").attr("src");   
-        let plan_name = $(this).data("plan");
         let plan_price = $(this).data("price");
 
         if(plan_name == 'bronze') {
@@ -259,12 +276,7 @@ register.changePlan = function() {
         register.showOrHidePayment();
 
         $(".upgraded-plan img").attr("src", img);
-        $(".final_plan").text(plan_name);
-        $(".final_price").text(plan_price);
-
-        $('#quantity').attr('value', '1');
-        $('#subplan').attr('value', plan_name);
-        $('#subprice').attr('value', plan_price);
+        
     }
 }
 
@@ -277,3 +289,81 @@ register.showOrHidePayment = function() {
         paymentRequired = false;
     }
 }
+
+register.setValue = function(planName) {
+    var price = 0;
+    
+    switch(planName) {
+        case 'bronze':
+            price = 99;
+            $('.plan-amount-container span').text(price).digits();
+            if(isACustomer) {
+                price = 0;
+                register.showAmountAndDiscout();
+            } 
+        break;
+
+        case 'silver':
+            price = 250;
+            $('.plan-amount-container span').text(price).digits();
+            if(isACustomer) {
+                price = price - 99;
+                register.showAmountAndDiscout();
+            } 
+        break;
+
+        case 'gold':
+            price = 500;
+            $('.plan-amount-container span').text(price).digits();
+            if(isACustomer) {
+                price = price - 99;
+                register.showAmountAndDiscout();
+            } 
+        break;
+
+        case 'platinum':
+            price = 1000;
+            $('.plan-amount-container span').text(price).digits();
+            if(isACustomer) {
+                price = price - 99;
+                register.showAmountAndDiscout();
+            } 
+        break;
+
+        case 'diamond':
+            price = 5000;
+            $('.plan-amount-container span').text(price).digits();
+            if(isACustomer) {
+                price = price - 99;
+                register.showAmountAndDiscout();
+            } 
+            
+        break;
+
+        case 'palladium':
+            price = 10000;
+            price = price * palladiumAmount;
+            $('.plan-amount-container span').text(price).digits();
+            register.hideAmountAndDiscout();
+        break;
+    }
+
+    $('#quantity').attr('value', '1');
+    $('#subplan').attr('value', planName);
+    $('#subprice').attr('value', price);
+    $('.final_price').text(price).digits();
+    
+
+}
+
+register.hideAmountAndDiscout = function () {
+    $('.plan-discount-container').addClass('hidden');
+    $('.plan-amount-container').addClass('hidden');
+}
+
+register.showAmountAndDiscout = function () {
+    $('.plan-discount-container').removeClass('hidden');
+    $('.plan-amount-container').removeClass('hidden');
+}
+
+
