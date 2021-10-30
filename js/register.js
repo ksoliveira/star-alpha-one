@@ -4,6 +4,8 @@ var hasPayment = false;
 
 var palladiumAmount = 1;
 var palladiumPrice = 10000;
+var uploadRequired = true;
+var paymentRequired = true;
 
 $(document).ready(function() {
     $('.amount-plus').on('click', function(){
@@ -191,8 +193,9 @@ register.getHash = function() {
         var hash = window.location.hash.substring(1);
         if(hash == 'wantToBuy') {
             isACustomer = false;
+            uploadRequired = false;
         } else if(hash == 'haveTheBook') {
-            isACustomer = true;
+            isACustomer = true;            
         } 
     } else {
         window.location.hash = 'wantToBuy';
@@ -228,6 +231,8 @@ register.changePlan = function() {
     $(".plan .plan-holder").removeClass("selected");
     $(this).addClass("selected");
 
+    uploadRequired = true;
+
     if(isACustomer){
         let img = $(this).children("img").attr("src");   
         let plan_name = $(this).data("plan");
@@ -241,6 +246,14 @@ register.changePlan = function() {
             $('.current-plan.current-plan-only-bronze').addClass('hidden');
             $('.current-plan.current-plan-current-upgrade').removeClass('hidden');
             hasPayment = true;
+        }
+
+        if(plan_name == 'palladium') {
+            $('.upload-container').addClass('hidden');
+            uploadRequired = false;
+        } else {
+            $('.upload-container').removeClass('hidden');
+            uploadRequired = true;
         }
 
         register.showOrHidePayment();
@@ -258,7 +271,9 @@ register.changePlan = function() {
 register.showOrHidePayment = function() {
     if(!isACustomer || (isACustomer && hasPayment)) { 
         $('.payment-container').removeClass('hidden');
+        paymentRequired = true;
     } else {
         $('.payment-container').addClass('hidden');
+        paymentRequired = false;
     }
 }
