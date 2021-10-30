@@ -52,6 +52,10 @@ body a {
 	text-align: center;
 }
 
+.head-center .logo {
+	margin-left: 60px;
+}
+
 .head-center .logo img{
 	left: 0;
 	right: 0;
@@ -111,6 +115,10 @@ body a {
 	border-color: #0052BC;
 }
 
+.btn-secondary:hover {
+    background-color: #0065e8;
+    border-color: #0052BC;
+}
 
 /* Body */
 
@@ -359,6 +367,10 @@ body a {
 	padding: 15px 40px;
 }
 
+.cta-btn .btn:hover {
+	background-color: #2b2b2b;
+}
+
 .plan-select{
 	padding: 200px 0;
 }
@@ -541,8 +553,23 @@ body a {
 	margin-top: 20px;
 }
 
+.plan-lvl p {
+    margin-bottom: 5px;
+    font-style: italic;
+    font-size: 15px;
+}
+
+.current-plan-current-upgrade .lvl-holder p {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.current-plan-current-upgrade .lvl-holder.upgraded-plan p {
+	text-align: right;
+    padding-right: 10px;
+}
 .plan-lvl-info{
-	margin: 50px auto 0;
+	margin: 90px auto 30px;
 	max-width: 600px;
 }
 
@@ -588,7 +615,13 @@ body a {
 	padding: 20px 0;
 }
 
-.registration .registration-holder *{
+.registration .registration-holder input:focus, 
+.registration .registration-holder select:focus {
+	outline: 0;
+}
+
+.registration .registration-holder input,
+.registration .registration-holder select{
 	float: left;
 	padding: 10px;
 	margin-bottom: 5px;
@@ -596,7 +629,135 @@ body a {
 	border: none;
 	border-bottom: 1px solid #707070;
 	color: #707070;
+	height: 42px;
 }
+
+#bookInvoice {
+	width: 0;
+	height: 0;
+	position: absolute;
+	visibility: hidden;
+}
+
+.file-ticket {
+	display: grid;
+	grid-template-columns: auto 160px;
+}
+
+.file-ticket-text {
+	color: #707070;
+}
+
+.file-ticket-text--up {
+    border-bottom: 1px solid #707070;
+    text-align: left;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.file-ticket-text--down {
+	text-align: left;
+    padding-left: 10px;
+    font-size: 12px;
+    padding-top: 10px;
+}
+
+.file-ticket-button {
+	text-align: right;
+	padding-top: 15px;
+}
+
+.btnBrowseTicket {
+	background-color: #6e6e6e;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 45px;
+    font-size: 14px;
+}
+
+.btnBrowseTicket:hover {
+	background-color: #9d9d9d;
+}
+
+.registration-holder:after {
+	clear: both;
+	content: '.';
+	visibility: hidden;
+}
+
+.registration-holder .form-group {
+	float: left;
+	padding: 0 10px;
+	margin-top: 15px;
+}
+
+.registration-holder .form-group.error .file-ticket-text--up {
+	border-bottom: 1px solid #e74849;
+}
+.registration-holder .form-group.error input,
+.registration-holder .form-group.error select {
+	border-bottom: 1px solid #e74849;
+	color: #e74849;
+}
+.registration-holder .form-group.error small {
+	display: block;
+}
+
+.registration-holder .form-group small {
+	display: none;
+	text-align: left;
+    color: #e74849;
+	padding-left: 10px;
+    font-size: 12px;
+}
+
+.upload-container small {
+	padding-top: 5px;
+}
+
+.form-row {
+	width: 100%;
+	float: left;
+}
+
+/* .registration .registration-holder *{
+	float: left;
+	padding: 10px;
+	margin-bottom: 5px;
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid #707070;
+	color: #707070;
+} */
+
+.add-billing-adress {
+	text-align: left;
+}
+
+.add-billing-adress--choose {
+    text-align: left;
+    padding-left: 20px;
+    cursor: pointer;
+    background: url('../img/check-payment.png') no-repeat 0 -17px;
+    display: inline;
+	margin-left: 20px;
+}
+
+.add-billing-adress--choose.active {
+	background-position: 0 2px;
+}
+
+
+
+.add-billing-adress--choose.active {
+
+}
+
+.add-billing-adress--container {
+
+}
+
 
 .registration .registration-holder select{
 	margin-bottom: 1px;
@@ -604,6 +765,10 @@ body a {
 
 .registration h4{
 	padding-bottom: 10px;
+    color: #adadad;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 24px;
 }
 
 .reg_final{
@@ -616,8 +781,9 @@ body a {
 }
 
 .submitbtn{
-	margin-top: 30px;
-	min-width: 300px;
+    margin-top: 30px;
+    min-width: 300px;
+    margin-bottom: 30px;
 }
 
 .disclaimer{
@@ -719,8 +885,8 @@ footer{
 }
 
 
-#myBtn {
- 	position: fixed;
+#goToTop {
+	position: fixed;
     bottom: 20px;
     right: 30px;
     z-index: 99;
@@ -736,11 +902,11 @@ footer{
     height: 45px;
 }
 
-#myBtn svg{
+#goToTop svg{
 	transform: rotate(90deg);
 }
 
-#myBtn:hover {
+#goToTop:hover {
   background-color: #555; /* Add a dark-grey background on hover */
 }
 
