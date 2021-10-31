@@ -168,8 +168,8 @@ register.checkRequiredFields = function () {
             register.setFieldError($('.file-ticket'));
         }
         //register.setLoginFieldError();
-    } else if (fieldId == "login-email") {
-        var validEmail = isValidEmail(fieldValue);
+    } else if (fieldId == "email") {
+        var validEmail = register.isValidEmail(fieldValue);
 
         if (!fieldValue || !validEmail) {
             register.setFieldError(this);
@@ -366,4 +366,7 @@ register.showAmountAndDiscout = function () {
     $('.plan-amount-container').removeClass('hidden');
 }
 
-
+register.isValidEmail = function(email) {
+    const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return reg.test(String(email).toLowerCase());
+}
