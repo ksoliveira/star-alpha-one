@@ -6,6 +6,42 @@ var palladiumAmount = 1;
 var palladiumPrice = 10000;
 var uploadRequired = true;
 var paymentRequired = true;
+var billingAddressRequired = false;
+
+var fieldsIds = 
+    ['call_sign',
+    'first_name',
+    'last_name',
+    'address_street',
+    'address_country',
+    'address_state',
+    'address_city',
+    'address_zipcode',
+    'date_of_birth',
+    'phone_number',
+    'email',
+    'password'
+    ];
+
+var paymentFieldsIds = 
+    ['credit_card_holdername',
+    'credit_card_number',
+    'cerdit_card_expiration_date',
+    'cerdit_card_cvv_code'
+    ];
+
+var billingAddressFieldsIds = 
+    ['billing_address_street',
+    'billing_address_country',
+    'billing_address_state',
+    'billing_address_city',
+    'billing_address_zipcode'
+    ];
+
+register.hasFieldWithError = false;
+register.hasPaymentFieldWithError = false;
+register.hasBillingAddressFieldWithError = false;
+
 
 $(document).ready(function() {
     $('.amount-plus').on('click', function(){
@@ -92,14 +128,18 @@ register.start = function() {
 
 register.configEvents = function () {
     $(document).on("click", "#rgisterBtn", register.check);
-
-    $(document).on("blur", ".register-required", register.checkRequiredFields);
-
     $(document).on('click', '.btnBrowseTicket', function() {
         $('#bookInvoice').trigger('click');
     });
+    $(document).on('click', '.add-billing-adress--choose', register.toggleBillingAddress);
 
-    $(document).on("focus", ".register-required", register.unsetSpecificLoginFieldError);
+    $(document).on("blur", ".register-required", register.checkRequiredFields);
+    $(document).on("blur", ".payment-required", register.checkPaymentRequiredFields);
+    $(document).on("blur", ".billing-address-required", register.billingAddressRequiredFields);
+
+    $(document).on("focus", ".register-required", register.unsetSpecificFieldError);
+    $(document).on("focus", ".payment-required", register.unsetSpecificFieldError);
+    $(document).on("focus", ".billing-address-required", register.unsetSpecificFieldError);
 
     $(document).on('change', '#bookInvoice', function() {
         var fieldValue = $(this).val();
@@ -109,8 +149,6 @@ register.configEvents = function () {
             $(".file-ticket").parent().removeClass("error");
         }
     });
-
-    $(document).on('click', '.add-billing-adress--choose', register.toggleBillingAddress)
 };
 
 register.setPalladiumValues = function(totalPrice, amount) {
@@ -137,22 +175,39 @@ register.toggleBillingAddress = function() {
 
     if(isActive) {
         $('.add-billing-adress--container').removeClass('hidden');
+        billingAddressRequired = true;
     } else {
         $('.add-billing-adress--container').addClass('hidden');
+        billingAddressRequired = false;
     }
 }
 
-register.unsetSpecificLoginFieldError = function () {
+register.unsetSpecificFieldError = function () {
     $(this).parents(".form-group").first().removeClass("error");
 };
 
 register.check = function (event) {
     event.preventDefault();
-    //register.unsetAllFieldsError();
-    //register.unsetLoginFieldError();
+    register.unsetAllFieldsError();
+    
+    // Register Fields
+    register.unsetRegisterFieldError();
     register.blurRequiredFields();
 
-    if (!register.hasFieldWithError) {
+    // Payment Fields
+    register.unsetRegisterPaymentFieldError();
+    register.blurRequiredPaymentFields();
+
+    // Billing Address Fields
+    register.unsetRegisterBillingAddressFieldError();
+    register.blurRequiredBillingAddressFields();
+
+
+
+    if (!register.hasFieldWithError &&
+        !register.hasPaymentFieldWithError &&
+        !register.hasBillingAddressFieldWithError) {
+
         console.log('Submeter formulário.');
     }
 };
@@ -167,29 +222,73 @@ register.checkRequiredFields = function () {
         if (fieldId == "bookInvoice") {
             register.setFieldError($('.file-ticket'));
         }
-        //register.setLoginFieldError();
+        register.setRegisterFieldError();
     } else if (fieldId == "email") {
         var validEmail = register.isValidEmail(fieldValue);
 
         if (!fieldValue || !validEmail) {
             register.setFieldError(this);
-            //register.setLoginFieldError();
-        } else {
-            $("#login-email").parents(".form-group").first().addClass("success");
+            register.setRegisterFieldError();
         }
     }
 };
 
+register.checkPaymentRequiredFields = function() {
+    var fieldValue = $(this).val();
+    
+    if (!fieldValue && paymentRequired) {
+        register.setFieldError(this);
+        register.setRegisterPaymentFieldError();
+    }
+}
+
+register.billingAddressRequiredFields = function() {
+    var fieldValue = $(this).val();
+    
+    if (!fieldValue && billingAddressRequired) {
+        register.setFieldError(this);
+        register.setRegisterBillingAddressFieldError();
+    }
+}
+
 register.blurRequiredFields = function () {
     $(".register-required").trigger("blur");
+};
+
+register.blurRequiredPaymentFields = function () {
+    $(".payment-required").trigger("blur");
+};
+
+register.blurRequiredBillingAddressFields = function () {
+    $(".billing-address-required").trigger("blur");
 };
 
 register.unsetAllFieldsError = function () {
     $(".form-group").removeClass("error");
 };
 
-register.unsetLoginFieldError = function () {
+register.unsetRegisterFieldError = function () {
     register.hasFieldWithError = false;
+};
+
+register.setRegisterFieldError = function () {
+    register.hasFieldWithError = true;
+};
+
+register.unsetRegisterPaymentFieldError = function () {
+    register.hasPaymentFieldWithError = false;
+};
+
+register.setRegisterPaymentFieldError = function () {
+    register.hasPaymentFieldWithError = true;
+};
+
+register.unsetRegisterBillingAddressFieldError = function () {
+    register.hasBillingAddressFieldWithError = false;
+};
+
+register.setRegisterBillingAddressFieldError = function () {
+    register.hasBillingAddressFieldWithError = true;
 };
 
 register.setFieldError = function (field) {

@@ -229,7 +229,7 @@
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<select id="address_country" class="full_width register-required" name="counrty">
+							<select id="address_country" class="full_width register-required" name="address_country">
 								<option value="">Country</option>
 								<option value="Afganistan">Afghanistan</option>
 								<option value="Albania">Albania</option>
@@ -486,6 +486,7 @@
 						<div class="form-group one_width">
 							<select id="address_state" name="address_state" class="full_width register-required" id="">
 								<option value="">State</option>
+								<option value="state2">State 2</option>
 							</select>
 							<small>This field can not be left blank.</small>
 						</div>
@@ -503,7 +504,7 @@
 
 					<div class="form-row">
 						<div class="form-group half_width">
-							<input id="dob" name="dob" class="full_width register-required" type="text" placeholder="Date of Birth">
+							<input id="date_of_birth" name="date_of_birth" class="full_width register-required" type="text" placeholder="Date of Birth">
 							<small>This field can not be left blank.</small>
 						</div>
 
@@ -522,12 +523,12 @@
 
 					<div class="form-row">
 						<div class="form-group half_width">
-							<input id="pw1" name="pw1" class="full_width register-required" type="text" placeholder="Password">
+							<input id="password" name="password" class="full_width register-required" type="text" placeholder="Password">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="pw2" name="pw2" class="full_width register-required" type="text" placeholder="Re-enter Password">
+							<input id="password-retry" name="password-retry" class="full_width register-required" type="text" placeholder="Re-enter Password">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
@@ -558,22 +559,22 @@
 
 					<div class="registration-holder">
 						<div class="form-group full_width">
-							<input id="card_name" name="card_name" class="full_width register-required" type="text" placeholder="Cardholder Name">
+							<input id="credit_card_holdername" name="credit_card_holdername" class="full_width payment-required" type="text" placeholder="Cardholder Name">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group full_width">
-							<input id="cc_num" name="cc_num" class="full_width register-required" type="text" placeholder="Credit Card Number">
+							<input id="credit_card_number" name="credit_card_number" class="full_width payment-required" type="text" placeholder="Credit Card Number">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="exp" name="exp" class="full_width register-required" type="text" placeholder="Expiration">
+							<input id="cerdit_card_expiration_date" name="cerdit_card_expiration_date" class="full_width payment-required" type="text" placeholder="Expiration">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="cvv_code" name="cvv_code" class="full_width register-required" type="text" placeholder="CVV Code">
+							<input id="cerdit_card_cvv_code" name="cerdit_card_cvv_code" class="full_width payment-required" type="text" placeholder="CVV Code">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
@@ -581,9 +582,17 @@
 					<div class="add-billing-adress registration-holder">
 						<div class="add-billing-adress--choose">Add billing address</div>
 						<div class="add-billing-adress--container hidden">
+
 							<div class="form-row">
 								<div class="form-group full_width">
-									<select id="billing_address_country" class="full_width register-required" name="counrty">
+									<input id="billing_address_street" name="billing_address_street" class="full_width billing-address-required" type="text" placeholder="Address">
+									<small>This field can not be left blank.</small>
+								</div>
+							</div>
+
+							<div class="form-row">
+								<div class="form-group full_width">
+									<select id="billing_address_country" class="full_width billing-address-required" name="billing_address_country">
 										<option value="">Country</option>
 										<option value="Afganistan">Afghanistan</option>
 										<option value="Albania">Albania</option>
@@ -838,19 +847,20 @@
 
 							<div class="form-row">
 								<div class="form-group one_width">
-									<select id="billing_address_state" name="billing_address_state" class="full_width register-required" id="">
+									<select id="billing_address_state" name="billing_address_state" class="full_width billing-address-required" id="">
 										<option value="">State</option>
+										<option value="state1">State 1</option>
 									</select>
 									<small>This field can not be left blank.</small>
 								</div>
 
 								<div class="form-group half_width">
-									<input id="billing_address_city" name="billing_address_city" class="full_width register-required" type="text" placeholder="City">
+									<input id="billing_address_city" name="billing_address_city" class="full_width billing-address-required" type="text" placeholder="City">
 									<small>This field can not be left blank.</small>
 								</div>
 
 								<div class="form-group one_width">
-									<input id="billing_address_zipcode" name="billing_address_zipcode" class="full_width register-required" type="text" placeholder="Zipcode">
+									<input id="billing_address_zipcode" name="billing_address_zipcode" class="full_width billing-address-required" type="text" placeholder="Zipcode">
 									<small>This field can not be left blank.</small>
 								</div>
 							</div>
