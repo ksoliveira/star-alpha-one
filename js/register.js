@@ -167,6 +167,8 @@ register.check = function (event) {
         !register.hasBillingAddressFieldWithError) {
 
         register.sendForm();
+    } else {
+        register.scrollToTheFirstFieldError();
     }
 };
 
@@ -550,6 +552,12 @@ register.sendForm = function() {
                 alert("Cannot get data");
             }
         });
+}
+
+register.scrollToTheFirstFieldError = function() {
+    $('html, body').animate({
+        scrollTop: ($('.form-group.error').first().offset().top - 300)
+    }, 600);
 }
 
 
