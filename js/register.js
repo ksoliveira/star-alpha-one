@@ -230,6 +230,8 @@ register.checkRequiredFields = function () {
             register.setFieldError(this);
             register.setRegisterFieldError();
         }
+    } else if (fieldId == "password" || fieldId == "password-retry") {
+        register.verifyPassword();
     }
 };
 
@@ -294,6 +296,11 @@ register.setRegisterBillingAddressFieldError = function () {
 register.setFieldError = function (field) {
     $(field).parents(".form-group").first().removeClass("success");
     $(field).parents(".form-group").first().addClass("error");
+};
+
+register.unsetFieldError = function (field) {
+    $(field).parents(".form-group").first().removeClass("success");
+    $(field).parents(".form-group").first().removeClass("error");
 };
 
 register.getHash = function() {
@@ -468,4 +475,27 @@ register.showAmountAndDiscout = function () {
 register.isValidEmail = function(email) {
     const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return reg.test(String(email).toLowerCase());
+}
+
+register.verifyPassword = function() {
+    var password = $('#password').val();
+    var passwordRetry = $('#password-retry').val();
+
+    if(password && passwordRetry) {
+        if(password != passwordRetry) {
+            register.setFieldError($('#password'));
+            register.setFieldError($('#password-retry'));
+            register.setRegisterFieldError();
+            $('#password + small').text('Passwords must match.');
+            $('#password-retry + small').text('Passwords must match.');
+        } else {
+            $('#password + small').text('This field can not be left blank.');
+            $('#password-retry + small').text('This field can not be left blank.');
+            register.unsetFieldError($('#password'));
+            register.unsetFieldError($('#password-retry'));
+        }
+    } else {
+        $('#password + small').text('This field can not be left blank.');
+        $('#password-retry + small').text('This field can not be left blank.');
+    }
 }
