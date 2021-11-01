@@ -202,13 +202,11 @@ register.check = function (event) {
     register.unsetRegisterBillingAddressFieldError();
     register.blurRequiredBillingAddressFields();
 
-
-
     if (!register.hasFieldWithError &&
         !register.hasPaymentFieldWithError &&
         !register.hasBillingAddressFieldWithError) {
 
-        console.log('Submeter formulário.');
+        register.sendForm();
     }
 };
 
@@ -499,3 +497,60 @@ register.verifyPassword = function() {
         $('#password-retry + small').text('This field can not be left blank.');
     }
 }
+
+register.sendForm = function() {
+    // fields
+    var call_sign = $('#call_sign').val();
+    var first_name = $('#first_name').val();
+    var last_name = $('#last_name').val();
+    var address_street = $('#address_street').val();
+    var address_country = $('#address_country').val();
+    var address_state = $('#address_state').val();
+    var address_city = $('#address_city').val();
+    var address_zipcode = $('#address_zipcode').val();
+    var date_of_birth = $('#date_of_birth').val();
+    var phone_number = $('#phone_number').val();
+    var email = $('#email').val();
+    var password = $('#password').val();
+
+    // paymentFields
+    var credit_card_holdername = $('#credit_card_holdername').val();
+    var credit_card_number = $('#credit_card_number').val();
+    var cerdit_card_expiration_date = $('#cerdit_card_expiration_date').val();
+    var cerdit_card_cvv_code = $('#cerdit_card_cvv_code').val();
+
+    // billingPaymentFields
+    var billing_address_street = $('#billing_address_street').val();
+    var billing_address_country = $('#billing_address_country').val();
+    var billing_address_state = $('#billing_address_state').val();
+    var billing_address_city = $('#billing_address_city').val();
+    var billing_address_zipcode = $('#billing_address_zipcode').val();
+
+    // uploadField
+    var uploadField = $('#bookInvoice').val();
+
+    // About Plan
+    var planName = $('#subplan').val();
+    var quantity = $('#quantity').val();
+    var planPrice = $('#subprice').val();
+    
+
+
+
+}
+
+
+///////////////// Provisorio
+
+fieldsIds.forEach(item => {
+    $('#' + item).val('aaa@aaa.aaa');
+});
+
+paymentFieldsIds.forEach(item => {
+    $('#' + item).val('aaa');
+});
+
+billingAddressFieldsIds.forEach(item => {
+    $('#' + item).val('aaa');
+});
+
