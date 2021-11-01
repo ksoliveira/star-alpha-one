@@ -75,46 +75,6 @@ $(document).ready(function() {
     register.start();
 });
 
-function registrationSubmit() {
-    let first_name = $('#first_name').val();
-    let last_name = $('#last_name').val();
-
-    let dob = $('#dob').val();
-
-    let address_street = $('#address_street').val();
-    let address_city = $('#address_city').val();
-    let address_state = $('#address_state').val();
-    let address_country = $('#address_country').val();
-    let address_zip = $('#address_zipcode').val();
-
-    let phone_number = $('#phone_number').val();
-    let email = $('#email').val();
-    let pw1 = $('#pw1').val();
-    let pw2 = $('#pw2').val();
-
-    let subplan = $('#subplan').val();
-    let quantity = $('#quantity').val();
-    let subprice = $('#subprice').val();
-    let bookInvoice = $('#bookInvoice').val();
-
-    $.ajax({
-        url: "#",
-        beforeSend: function(xhr) { 
-            xhr.setRequestHeader("Authorization", "Basic #"); 
-        },
-        type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: `{"firstName":"${first_name}", "lastName":"${last_name}", "dateOfBirth":"${dob}", "email":"${email}", "password":"${pw1}", "street":"${address_street}", "complement":"${address_street}", "city":"${pw1}", "state":"${pw1}", "country":"${pw1}", "postalCode":"${pw1}", "phone":"${phone_number}", "quantity":"${quantity}", "subscriptionPlan":"${subplan}", "bookInvoice":"${bookInvoice}"}`,
-        success: function (data) {
-            alert('Submitted');
-        },
-        error: function(){
-            alert("Cannot get data");
-        }
-    });
-}
-
 $.fn.digits = function(){ 
     return this.each(function(){ 
         $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
@@ -531,16 +491,69 @@ register.sendForm = function() {
 
     // About Plan
     var planName = $('#subplan').val();
-    var quantity = $('#quantity').val();
+    var planQuantity = $('#quantity').val();
     var planPrice = $('#subprice').val();
     
 
-
-
+    var payload = `{
+        "firstName": ${first_name},
+        "lastName": "string",
+        "dateOfBirth": "1980-01-31",
+        "user": {
+        "email": "user@example.com",
+        "password": "string"
+        },
+        "addresses": [
+        {
+            "street": "string",
+            "complement": "string",
+            "city": "string",
+            "state": "string",
+            "country": "string",
+            "postalCode": "12345"
+        }
+        ],
+        "contacts": [
+        {
+            "ddi": "+123",
+            "phone": "1234-5678"
+        }
+        ],
+        "cadetSubscriptionPlans": [
+        {
+            "quantity": 1,
+            "subscriptionPlan": "/subscription_plans/1",
+            "bookInvoice": {
+            "name": "string"
+            }
+        }
+        ],
+        "creditCardHolderName": "stringstringstri",
+        "creditCardNumber": "4111111111111111",
+        "creditCardCode": "123",
+        "creditCardExpirationDate": "2038-12"
+    }`;
+    
+        $.ajax({
+            url: "#",
+            beforeSend: function(xhr) { 
+                xhr.setRequestHeader("Authorization", "Basic #"); 
+            },
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: `{"firstName":"${first_name}", "lastName":"${last_name}", "dateOfBirth":"${dob}", "email":"${email}", "password":"${pw1}", "street":"${address_street}", "complement":"${address_street}", "city":"${pw1}", "state":"${pw1}", "country":"${pw1}", "postalCode":"${pw1}", "phone":"${phone_number}", "quantity":"${quantity}", "subscriptionPlan":"${subplan}", "bookInvoice":"${bookInvoice}"}`,
+            success: function (data) {
+                alert('Submitted');
+            },
+            error: function(){
+                alert("Cannot get data");
+            }
+        });
 }
 
 
-///////////////// Provisorio
+/*
 
 fieldsIds.forEach(item => {
     $('#' + item).val('aaa@aaa.aaa');
@@ -553,4 +566,7 @@ paymentFieldsIds.forEach(item => {
 billingAddressFieldsIds.forEach(item => {
     $('#' + item).val('aaa');
 });
+
+*/
+
 
