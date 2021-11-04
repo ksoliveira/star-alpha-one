@@ -201,35 +201,35 @@
 				<div class="registration-holder">
 					<div class="form-row">
 						<div class="form-group full_width">
-							<input id="call_sign" name="call_sign" class="full_width" type="text" placeholder="Call Sign">
+							<input data-name="callSign" id="call_sign" name="call_sign" class="full_width" type="text" placeholder="Call Sign">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<input id="first_name" name="first_name" class="full_width register-required"type="text" placeholder="First Name">
+							<input data-name="firstName" id="first_name" name="first_name" class="full_width register-required"type="text" placeholder="First Name">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<input id="last_name" name="last_name" class="full_width register-required" type="text" placeholder="Last Name">
+							<input data-name="lastName" id="last_name" name="last_name" class="full_width register-required" type="text" placeholder="Last Name">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<input id="address_street" name="address_street" class="full_width register-required" type="text" placeholder="Address">
+							<input data-name="addresses[0].street" id="address_street" name="address_street" class="full_width register-required" type="text" placeholder="Address">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<select id="address_country" class="full_width register-required" name="address_country">
+							<select data-name="addresses[0].country" id="address_country" class="full_width register-required" name="address_country">
 								<option value="">Country</option>
 								<option value="Afganistan">Afghanistan</option>
 								<option value="Albania">Albania</option>
@@ -484,7 +484,7 @@
 
 					<div class="form-row">
 						<div class="form-group one_width">
-							<select id="address_state" name="address_state" class="full_width register-required" id="">
+							<select data-name="addresses[0].state" id="address_state" name="address_state" class="full_width register-required" id="">
 								<option value="">State</option>
 								<option value="state2">State 2</option>
 							</select>
@@ -492,38 +492,38 @@
 						</div>
 
 						<div class="form-group half_width">
-							<input id="address_city" name="address_city" class="full_width register-required" type="text" placeholder="City">
+							<input data-name="addresses[0].city" id="address_city" name="address_city" class="full_width register-required" type="text" placeholder="City">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group one_width">
-							<input id="address_zipcode" name="address_zipcode" class="full_width register-required" type="text" placeholder="Zipcode">
+							<input data-name="addresses[0].postalCode" id="address_zipcode" name="address_zipcode" class="full_width register-required" type="text" placeholder="Zipcode">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group half_width">
-							<input id="date_of_birth" name="date_of_birth" class="full_width register-required" type="text" placeholder="Date of Birth">
+							<input data-name="dateOfBirth" id="date_of_birth" name="date_of_birth" class="full_width register-required" type="text" placeholder="Date of Birth">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="phone_number" name="phone_number" class="full_width register-required" type="text" placeholder="Phone">
+							<input data-name="contacts[0].phone" id="phone_number" name="phone_number" class="full_width register-required" type="text" placeholder="Phone">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group full_width">
-							<input id="email" name="email" class="full_width register-required" type="text" placeholder="Email">
+							<input data-name="user.email" id="email" name="email" class="full_width register-required" type="text" placeholder="Email">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group half_width">
-							<input id="password" name="password" class="full_width register-required" type="password" placeholder="Password">
+							<input data-name="user.plainPassword" id="password" name="password" class="full_width register-required" type="password" placeholder="Password">
 							<small>This field can not be left blank.</small>
 						</div>
 
@@ -536,7 +536,7 @@
 					<div class="form-row upload-container">
 						<div class="form-group full_width">
 							<div class="file-ticket">
-								<input id="bookInvoice" type="file" class="register-required"  name="bookInvoice" accept="application/pdf, image/png, image/jpeg">
+								<input data-name="bookInvoice" id="bookInvoice" type="file" class="register-required"  name="bookInvoice" accept="application/pdf, image/png, image/jpeg">
 								<div class="file-ticket-text">
 									<div class="file-ticket-text--up">Upload Proof of Purchase (invoice)</div>
 									<small>This field can not be left blank.</small>
@@ -559,22 +559,22 @@
 
 					<div class="registration-holder">
 						<div class="form-group full_width">
-							<input id="credit_card_holdername" name="credit_card_holdername" class="full_width payment-required" type="text" placeholder="Cardholder Name">
+							<input data-name="creditCardHolderName" id="credit_card_holdername" name="credit_card_holdername" class="full_width payment-required" type="text" placeholder="Cardholder Name">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group full_width">
-							<input id="credit_card_number" name="credit_card_number" class="full_width payment-required" type="text" placeholder="Credit Card Number">
+							<input data-name="creditCardNumber" id="credit_card_number" name="credit_card_number" class="full_width payment-required" type="text" placeholder="Credit Card Number">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="cerdit_card_expiration_date" name="cerdit_card_expiration_date" class="full_width payment-required" type="text" placeholder="Expiration">
+							<input data-name="creditCardExpirationDate" id="cerdit_card_expiration_date" name="cerdit_card_expiration_date" class="full_width payment-required" type="text" placeholder="Expiration">
 							<small>This field can not be left blank.</small>
 						</div>
 
 						<div class="form-group half_width">
-							<input id="cerdit_card_cvv_code" name="cerdit_card_cvv_code" class="full_width payment-required" type="text" placeholder="CVV Code">
+							<input data-name="creditCardCode" id="cerdit_card_cvv_code" name="cerdit_card_cvv_code" class="full_width payment-required" type="text" placeholder="CVV Code">
 							<small>This field can not be left blank.</small>
 						</div>
 					</div>

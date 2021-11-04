@@ -500,6 +500,8 @@ register.sendForm = function() {
     var phone_number = $('#phone_number').val();
     var email = $('#email').val();
     var password = $('#password').val();
+    var address_complement = "";
+    var ddi = "";
 
     // paymentFields
     var credit_card_holdername = $('#credit_card_holdername').val();
@@ -514,15 +516,93 @@ register.sendForm = function() {
     var billing_address_city = $('#billing_address_city').val();
     var billing_address_zipcode = $('#billing_address_zipcode').val();
 
-    // uploadField
-    var uploadField = $('#bookInvoice').val();
-
     // About Plan
     var subscription_plan = subscriptionPlan;
     var plan_quantity = planQuantity;
     
-    
+    var form_data = new FormData();
+    var form_headers = new Headers();
 
+    form_headers.append("Content-Type", "application/json");
+
+    form_data.append("file", bookInvoice.files[0]);
+    form_data.append("cadetSubscriptionPlan", subscriptionPlan);
+
+    endpoint = `{
+            "callSign": "${call_sign}",
+            "firstName": "${first_name}",
+            "lastName": "${last_name}",
+            "dateOfBirth": "${date_of_birth}",
+            "user": {
+                "email": "${email}",
+                "password": "${password}"
+            },
+            "addresses": [
+                {
+                    "street": "${address_street}",
+                    "complement": "${address_complement}",
+                    "city": "${address_city}",
+                    "state": "${address_state}",
+                    "country": "${address_country}",
+                    "postalCode": "${address_zipcode}"
+                }
+            ],
+            "contacts": [
+                {
+                    "ddi": "${ddi}",
+                    "phone": "${phone_number}"
+                }
+            ],
+            "cadetSubscriptionPlans": [
+                {
+                    "quantity": ${plan_quantity},
+                    "subscriptionPlan": "${subscription_plan}"
+                }
+            ],
+            "creditCardHolderName": "${credit_card_holdername}",
+            "creditCardNumber": "${credit_card_number}",
+            "creditCardCode": "${cerdit_card_cvv_code}",
+            "creditCardExpirationDate": "${cerdit_card_expiration_date}"
+        }`;
+
+
+    return fetch(apiPath + cadetsEndpoint,{ 
+        method: 'POST',
+        headers: form_headers,
+        body: endpoint
+    })
+    .then(function(response){
+
+        return response.json();
+    })
+    .then(function(response){
+        if(response.violations) {
+            register.setPostFieldsError(response.violations);
+            return response.violations;
+        }
+        return response;
+    })
+    .catch(function(err){
+        console.log(err);
+    })
+}
+
+register.setPostFieldsError = function (violations) {
+    violations.forEach(violation => {
+        var field = violation.propertyPath;
+        var message = violation.message;
+        var element = $('.form-group input[data-name="' + field + '"]');
+        if(!element || $(element).length == 0) {
+            element = $('.form-group select[data-name="' + field + '"]');
+        }
+
+        if(!element || $(element).length == 0) {
+            return;
+        } else {
+            $(element).parents('.form-group').first().find('small').text(message);
+            $(element).parents('.form-group').first().addClass('error');
+        }
+    });
 }
 
 register.scrollToTheFirstFieldError = function() {
@@ -582,7 +662,38 @@ register.setPlanPrices = function(plans) {
     register.setValue('bronze');
 };
 
-/*
+register.postBookInvoices = function() {
+
+    var bookInvoice = document.getElementById('bookInvoice');;
+    var form_data = new FormData();
+
+    form_data.append("file", bookInvoice.files[0]);
+    form_data.append("cadetSubscriptionPlan", subscriptionPlan);
+
+    return fetch(apiPath + bookInvoicesEndpoint,{ 
+            method: 'POST',
+            body: form_data
+        })
+        .then(function(response){
+    
+            // if(response.ok)
+            //     {
+            //         return response.text();
+            //     } else{
+            //         msg = new message();
+            //         msg.duration(5);
+            //         msg.add('<i class="icon ban red"></i> Ocorreu um erro durante o carregamento desta página');
+            //     }
+    
+            return response.json();
+        })
+        .catch(function(err){
+            console.log(err);
+        })
+    
+}
+
+
 
 fieldsIds.forEach(item => {
     $('#' + item).val('aaa@aaa.aaa');
@@ -596,6 +707,6 @@ billingAddressFieldsIds.forEach(item => {
     $('#' + item).val('aaa');
 });
 
-*/
+
 
 
