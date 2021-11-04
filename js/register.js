@@ -20,6 +20,9 @@ var uploadRequired = true;
 var paymentRequired = true;
 var billingAddressRequired = false;
 
+var planQuantity = 1;
+var subscriptionPlan;
+
 var bookInvoicesEndpoint = '/book_invoices';
 var subscriptionPlansEndpoint = '/subscription_plans?page=1';
 var cadetsEndpoint = '/cadets';
@@ -68,6 +71,7 @@ $(document).ready(function() {
         } else {
             palladiumAmount = 100;
         }
+        planQuantity = palladiumAmount;
     });
 
     $('.amount-minus').on('click', function(){
@@ -78,6 +82,7 @@ $(document).ready(function() {
         } else {
             palladiumAmount = 1;
         }
+        planQuantity = palladiumAmount;
     });
 
     $("button.hamburger--collapse").click(function(){
@@ -149,6 +154,7 @@ register.resetPalladium = function () {
     $('.palladiumprice').parent().attr('data-price', totalPrice);
     $('.palladium-amount').text(amount);
     palladiumAmount = 1;
+    planQuantity = 1;
 }
 
 register.toggleBillingAddress = function() {
@@ -327,6 +333,8 @@ register.upgradePlan = function () {
 register.changePlan = function() {
     $(".plan .plan-holder").removeClass("selected");
     $(this).addClass("selected");
+
+    subscriptionPlan = $(this).data('id');
     
     let plan_name = $(this).data("plan");
     
@@ -384,9 +392,11 @@ register.setValue = function(planName) {
         case 'bronze':
             price = $('.plan-holder[data-plan="bronze"]').data('price');
             $('.plan-amount-container span').text(price).digits();
+            subscriptionPlan = $('.plan-holder[data-plan="bronze"]').data('id');
             if(isACustomer) {
                 price = 0;
                 register.showAmountAndDiscout();
+                subscriptionPlan = $('.plan-holder[data-plan="bronze"]').data('free');
             } 
         break;
 
@@ -508,8 +518,8 @@ register.sendForm = function() {
     var uploadField = $('#bookInvoice').val();
 
     // About Plan
-    var subscriptionPlan = $('#subplan').val();
-    var planQuantity = $('#quantity').val();
+    var subscription_plan = subscriptionPlan;
+    var plan_quantity = planQuantity;
     
     
 
@@ -548,13 +558,17 @@ register.setPlanPrices = function(plans) {
         var planPrice = parseFloat(plan.value);
         var isActive = plan.isActive;
         var planId = plan['@id'];
+        var planElement = $('.plan-holder[data-plan="'+ planName +'"]');
+        var planPriceElement = $('.plan-holder[data-plan="'+ planName +'"] .plan-price');
 
         if(planName == 'palladium') {
             palladiumPrice = planPrice
         }
 
-        var planElement = $('.plan-holder[data-plan="'+ planName +'"]');
-        var planPriceElement = $('.plan-holder[data-plan="'+ planName +'"] .plan-price');
+        if(planName == 'bronze free' && isActive == true) {
+            $('.plan-holder[data-plan="bronze"]').attr('data-free', planId);
+        }
+
         if(planElement && isActive == true) {
             $(planElement).attr('data-price', planPrice);
             $(planElement).attr('data-id', planId);
