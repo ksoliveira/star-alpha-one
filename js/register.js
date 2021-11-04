@@ -435,12 +435,7 @@ register.setValue = function(planName) {
         break;
     }
 
-    $('#quantity').attr('value', '1');
-    $('#subplan').attr('value', planName);
-    $('#subprice').attr('value', price);
     $('.final_price').text(price).digits();
-    
-
 }
 
 register.hideAmountAndDiscout = function () {
@@ -513,66 +508,11 @@ register.sendForm = function() {
     var uploadField = $('#bookInvoice').val();
 
     // About Plan
-    var planName = $('#subplan').val();
+    var subscriptionPlan = $('#subplan').val();
     var planQuantity = $('#quantity').val();
-    var planPrice = $('#subprice').val();
+    
     
 
-    var payload = `{
-        "firstName": ${first_name},
-        "lastName": "string",
-        "dateOfBirth": "1980-01-31",
-        "user": {
-        "email": "user@example.com",
-        "password": "string"
-        },
-        "addresses": [
-        {
-            "street": "string",
-            "complement": "string",
-            "city": "string",
-            "state": "string",
-            "country": "string",
-            "postalCode": "12345"
-        }
-        ],
-        "contacts": [
-        {
-            "ddi": "+123",
-            "phone": "1234-5678"
-        }
-        ],
-        "cadetSubscriptionPlans": [
-        {
-            "quantity": 1,
-            "subscriptionPlan": "/subscription_plans/1",
-            "bookInvoice": {
-            "name": "string"
-            }
-        }
-        ],
-        "creditCardHolderName": "stringstringstri",
-        "creditCardNumber": "4111111111111111",
-        "creditCardCode": "123",
-        "creditCardExpirationDate": "2038-12"
-    }`;
-    
-        $.ajax({
-            url: "#",
-            beforeSend: function(xhr) { 
-                xhr.setRequestHeader("Authorization", "Basic #"); 
-            },
-            type: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: `{"firstName":"${first_name}", "lastName":"${last_name}", "dateOfBirth":"${dob}", "email":"${email}", "password":"${pw1}", "street":"${address_street}", "complement":"${address_street}", "city":"${pw1}", "state":"${pw1}", "country":"${pw1}", "postalCode":"${pw1}", "phone":"${phone_number}", "quantity":"${quantity}", "subscriptionPlan":"${subplan}", "bookInvoice":"${bookInvoice}"}`,
-            success: function (data) {
-                alert('Submitted');
-            },
-            error: function(){
-                alert("Cannot get data");
-            }
-        });
 }
 
 register.scrollToTheFirstFieldError = function() {
@@ -606,7 +546,7 @@ register.setPlanPrices = function(plans) {
     plans.forEach(plan => {
         var planName = plan.name;
         var planPrice = parseFloat(plan.value);
-        var isActive = plans.isActive;
+        var isActive = plan.isActive;
         var planId = plan['@id'];
 
         if(planName == 'palladium') {
@@ -615,8 +555,9 @@ register.setPlanPrices = function(plans) {
 
         var planElement = $('.plan-holder[data-plan="'+ planName +'"]');
         var planPriceElement = $('.plan-holder[data-plan="'+ planName +'"] .plan-price');
-        if(planElement) {
+        if(planElement && isActive == true) {
             $(planElement).attr('data-price', planPrice);
+            $(planElement).attr('data-id', planId);
             $(planPriceElement).text('$' + planPrice).digits();
         }
     });
