@@ -1,12 +1,28 @@
+var apiPath = '';
+var apiHomologacao  = 'https://api.homologation.staralphaone.space';
+var apiProd         = 'https://api.staralphaone.space';
+
+var urlPath = window.location.href;
+
+if (urlPath.indexOf('localhost/') > -1 || urlPath.indexOf('127.0.0.1/') > -1) {
+    apiPath = apiHomologacao;
+} else {
+    apiPath = apiProd;
+}
+
 var register = {};
 var isACustomer = false;
 var hasPayment = false;
 
 var palladiumAmount = 1;
-var palladiumPrice = 10000;
+var palladiumPrice;
 var uploadRequired = true;
 var paymentRequired = true;
 var billingAddressRequired = false;
+
+var bookInvoicesEndpoint = '/book_invoices';
+var subscriptionPlansEndpoint = '/subscription_plans?page=1';
+var cadetsEndpoint = '/cadets';
 
 var fieldsIds = 
     ['call_sign',
@@ -84,6 +100,12 @@ $.fn.digits = function(){
 register.start = function() {
     register.configEvents();
     register.getHash();
+    register.getSubscriptionPlans()
+        .then(function(plans) {
+            if(plans) {
+                register.setPlanPrices(plans);
+            }
+        });
 }
 
 register.configEvents = function () {
@@ -113,7 +135,7 @@ register.configEvents = function () {
 
 register.setPalladiumValues = function(totalPrice, amount) {
     $('.palladiumprice span').text(totalPrice).digits();
-    $('.palladiumprice').parent().attr('data-price', totalPrice);
+    // $('.palladiumprice').parent().attr('data-price', totalPrice);
     $(".final_plan").text('palladium');
     $('.palladium-amount').text(amount);
     $('.plan-upgrade .plan .plan-holder[data-plan="palladium"]').trigger('click');
@@ -289,7 +311,6 @@ register.setPage = function() {
         register.upgradePlan();
     }
 
-    register.setValue('bronze');
     register.showOrHidePayment();
     $('.plan-select').removeClass('hidden');
     $(".plan .plan-holder").click(register.changePlan);
@@ -361,7 +382,7 @@ register.setValue = function(planName) {
     
     switch(planName) {
         case 'bronze':
-            price = 99;
+            price = $('.plan-holder[data-plan="bronze"]').data('price');
             $('.plan-amount-container span').text(price).digits();
             if(isACustomer) {
                 price = 0;
@@ -370,16 +391,16 @@ register.setValue = function(planName) {
         break;
 
         case 'silver':
-            price = 250;
+            price = $('.plan-holder[data-plan="silver"]').data('price');
             $('.plan-amount-container span').text(price).digits();
             if(isACustomer) {
-                price = price - 99;
+                price = parseFloat(price - 99);
                 register.showAmountAndDiscout();
             } 
         break;
 
         case 'gold':
-            price = 500;
+            price = $('.plan-holder[data-plan="gold"]').data('price');
             $('.plan-amount-container span').text(price).digits();
             if(isACustomer) {
                 price = price - 99;
@@ -388,7 +409,7 @@ register.setValue = function(planName) {
         break;
 
         case 'platinum':
-            price = 1000;
+            price = $('.plan-holder[data-plan="platinum"]').data('price');
             $('.plan-amount-container span').text(price).digits();
             if(isACustomer) {
                 price = price - 99;
@@ -397,7 +418,7 @@ register.setValue = function(planName) {
         break;
 
         case 'diamond':
-            price = 5000;
+            price = $('.plan-holder[data-plan="diamond"]').data('price');
             $('.plan-amount-container span').text(price).digits();
             if(isACustomer) {
                 price = price - 99;
@@ -407,7 +428,7 @@ register.setValue = function(planName) {
         break;
 
         case 'palladium':
-            price = 10000;
+            price = $('.plan-holder[data-plan="palladium"]').data('price');
             price = price * palladiumAmount;
             $('.plan-amount-container span').text(price).digits();
             register.hideAmountAndDiscout();
@@ -560,6 +581,51 @@ register.scrollToTheFirstFieldError = function() {
     }, 600);
 }
 
+register.getSubscriptionPlans = function() {
+    return fetch(apiPath + subscriptionPlansEndpoint, {
+        method: "GET",
+        mode: "cors",
+        credentials: "same-origin",
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((res) => {
+            if(res && res['hydra:member']) {
+                var plans = res['hydra:member'];
+                return plans;
+            }
+            return false;
+        })
+        .catch(function (err) {
+            console.log(err);
+    });
+}
+
+register.setPlanPrices = function(plans) {
+    plans.forEach(plan => {
+        var planName = plan.name;
+        var planPrice = parseFloat(plan.value);
+        var isActive = plans.isActive;
+        var planId = plan['@id'];
+
+        if(planName == 'palladium') {
+            palladiumPrice = planPrice
+        }
+
+        var planElement = $('.plan-holder[data-plan="'+ planName +'"]');
+        var planPriceElement = $('.plan-holder[data-plan="'+ planName +'"] .plan-price');
+        if(planElement) {
+            $(planElement).attr('data-price', planPrice);
+            $(planPriceElement).text('$' + planPrice).digits();
+        }
+    });
+
+    var bronzeText = $('.plan-holder[data-plan="bronze"]').text();
+    $('.final_price').text(bronzeText.trim().substring(0, bronzeText.length))
+    $('.plan-upgrade').removeClass('hidden');
+    register.setValue('bronze');
+};
 
 /*
 

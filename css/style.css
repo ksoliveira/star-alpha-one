@@ -911,6 +911,18 @@ footer{
 }
 
 
+@media (min-width: 992px) {
+	.container.register {
+		max-width: 1000px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.container.register {
+		max-width: 1260px;
+	}
+}
+
 /* Media quaries */
 
 @media screen and (max-width: 1400px){
