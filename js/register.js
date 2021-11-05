@@ -124,6 +124,8 @@ register.configEvents = function () {
     $(document).on("blur", ".payment-required", register.checkPaymentRequiredFields);
     $(document).on("blur", ".billing-address-required", register.billingAddressRequiredFields);
 
+    $(document).on("change", "#date_of_birth", register.checkRequiredFields);
+
     $(document).on("focus", ".register-required", register.unsetSpecificFieldError);
     $(document).on("focus", ".payment-required", register.unsetSpecificFieldError);
     $(document).on("focus", ".billing-address-required", register.unsetSpecificFieldError);
@@ -136,6 +138,8 @@ register.configEvents = function () {
             $(".file-ticket").parent().removeClass("error");
         }
     });
+
+    $('#date_of_birth').datepicker();
 };
 
 register.setPalladiumValues = function(totalPrice, amount) {
@@ -220,6 +224,8 @@ register.checkRequiredFields = function () {
         }
     } else if (fieldId == "password" || fieldId == "password-retry") {
         register.verifyPassword();
+    } else {
+        register.unsetFieldError(this);
     }
 };
 
@@ -666,12 +672,18 @@ register.postBookInvoices = function() {
 
     var bookInvoice = document.getElementById('bookInvoice');;
     var form_data = new FormData();
+    var form_headers = new Headers();
+
+    form_headers.append("Content-Type", "multipart/form-data");
 
     form_data.append("file", bookInvoice.files[0]);
     form_data.append("cadetSubscriptionPlan", subscriptionPlan);
 
     return fetch(apiPath + bookInvoicesEndpoint,{ 
             method: 'POST',
+            mode: 'cors',
+            credentials: "same-origin",
+            headers: form_headers,
             body: form_data
         })
         .then(function(response){
@@ -694,7 +706,7 @@ register.postBookInvoices = function() {
 }
 
 
-
+/*
 fieldsIds.forEach(item => {
     $('#' + item).val('aaa@aaa.aaa');
 });
@@ -707,6 +719,6 @@ billingAddressFieldsIds.forEach(item => {
     $('#' + item).val('aaa');
 });
 
-
+*/
 
 

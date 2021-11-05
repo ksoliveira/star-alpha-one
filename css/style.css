@@ -910,6 +910,30 @@ footer{
   background-color: #555; /* Add a dark-grey background on hover */
 }
 
+/**/
+body .ui-widget-content {
+	background: #111111;
+	color: #FFFFFF
+}
+
+body .ui-state-default,
+body .ui-widget-content .ui-state-default,
+body .ui-widget-header .ui-state-default,
+body .ui-button,
+html body .ui-button.ui-state-disabled:hover,
+html body .ui-button.ui-state-disabled:active {
+    border: 1px solid #404040;
+    background: #212121;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+body .ui-widget-content .ui-state-active {
+	border: 1px solid #1da0d1;
+    background: #212121;
+    font-weight: normal;
+    color: #1cb5fb;
+}
 
 @media (min-width: 992px) {
 	.container.register {
