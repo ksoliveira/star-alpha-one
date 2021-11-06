@@ -27,6 +27,10 @@ var bookInvoicesEndpoint = '/book_invoices';
 var subscriptionPlansEndpoint = '/subscription_plans?page=1';
 var cadetsEndpoint = '/cadets';
 
+var countryDDI = '+1';
+var invalidPhoneNumberMessageError = 'Invalid phone number.';
+var defaultFieldMessageError = 'This field can not be left blank.';
+
 var fieldsIds = 
     ['call_sign',
     'first_name',
@@ -139,6 +143,14 @@ register.configEvents = function () {
         }
     });
 
+    $(document).on('keyup'  , '#phone_number', register.formatPhoneNumber);
+    $(document).on('keydown', '#phone_number', register.formatPhoneNumber);
+    $(document).on('blur'   , '#phone_number', register.validateFormatPhoneNumber);
+    $(document).on('change' , '#phone_number', register.validateFormatPhoneNumber);
+    $(document).on('change' , '#phone_number', register.validateFormatPhoneNumber);
+
+    $(document).on('change', '#address_country', register.changeCountry)
+
     $('#date_of_birth').datepicker();
 };
 
@@ -225,7 +237,9 @@ register.checkRequiredFields = function () {
     } else if (fieldId == "password" || fieldId == "password-retry") {
         register.verifyPassword();
     } else {
-        register.unsetFieldError(this);
+        if(fieldId != "phone-number") {
+            register.unsetFieldError(this);
+        }
     }
 };
 
@@ -481,14 +495,14 @@ register.verifyPassword = function() {
             $('#password + small').text('Passwords must match.');
             $('#password-retry + small').text('Passwords must match.');
         } else {
-            $('#password + small').text('This field can not be left blank.');
-            $('#password-retry + small').text('This field can not be left blank.');
+            $('#password + small').text(defaultFieldMessageError);
+            $('#password-retry + small').text(defaultFieldMessageError);
             register.unsetFieldError($('#password'));
             register.unsetFieldError($('#password-retry'));
         }
     } else {
-        $('#password + small').text('This field can not be left blank.');
-        $('#password-retry + small').text('This field can not be left blank.');
+        $('#password + small').text(defaultFieldMessageError);
+        $('#password-retry + small').text(defaultFieldMessageError);
     }
 }
 
@@ -705,8 +719,45 @@ register.postBookInvoices = function() {
     
 }
 
+register.formatPhoneNumber = function() {
+    var phone = $(this).val();
+
+    if(phone.indexOf(countryDDI) < 0) {
+        phone = countryDDI + phone;
+    }
+
+    phone = libphonenumber.formatIncompletePhoneNumber(phone);
+
+    $(this).val(phone);
+}
+
+register.validateFormatPhoneNumber = function() {
+    var phone = $(this).val();
+    var isValid = libphonenumber.isPossiblePhoneNumber(phone);
+
+    if(!isValid) {
+        $('#phone_number + small').text(invalidPhoneNumberMessageError);
+        $('#phone_number').parents('.form-group').first().addClass('error');
+    }
+
+    console.log(isValid);
+}
+
+register.changeCountry = function() {
+    $('#phone_number').val('');
+    $('#phone_number').parents(".form-group").first().removeClass("error");
+
+    var ddi = $(this).find(':selected').data('ddi');
+
+    if(ddi != 'xxx') {
+        countryDDI = '+' + ddi;
+    } else {
+        countryDDI = '+'
+    }
+}
 
 /*
+
 fieldsIds.forEach(item => {
     $('#' + item).val('aaa@aaa.aaa');
 });
@@ -720,5 +771,3 @@ billingAddressFieldsIds.forEach(item => {
 });
 
 */
-
-
