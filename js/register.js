@@ -125,6 +125,8 @@ register.configEvents = function () {
     $(document).on('keydown', '#cerdit_card_expiration_date', register.formatExpirationDate);
     $(document).on('change', '#cerdit_card_expiration_date', register.formatExpirationDate);
 
+    $('#date_of_birth').mask('99/99/9999');
+
     $(document).on('change', '#address_country', register.changeCountry)
 
     $('#date_of_birth').datepicker();
@@ -782,8 +784,8 @@ register.successfullyRegistered = function() {
 
 // ✅ Máscara no campo expiration-date
 // ✅ Feedback visual de que o cadet foi cadastraco com sucesso.
+// ✅ Retirar os campos de billing-address
 // ❌ Adicionar componente de calendário (datepicker) no campo de date of birth
-// ❌ Retirar (se necessário) os campos de billing-address
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
 // ❌ Submeter a imagem de upload
