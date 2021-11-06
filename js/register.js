@@ -31,36 +31,6 @@ var countryDDI = '+1';
 var invalidPhoneNumberMessageError = 'Invalid phone number.';
 var defaultFieldMessageError = 'This field can not be left blank.';
 
-var fieldsIds = 
-    ['call_sign',
-    'first_name',
-    'last_name',
-    'address_street',
-    'address_country',
-    'address_state',
-    'address_city',
-    'address_zipcode',
-    'date_of_birth',
-    'phone_number',
-    'email',
-    'password'
-    ];
-
-var paymentFieldsIds = 
-    ['credit_card_holdername',
-    'credit_card_number',
-    'cerdit_card_expiration_date',
-    'cerdit_card_cvv_code'
-    ];
-
-var billingAddressFieldsIds = 
-    ['billing_address_street',
-    'billing_address_country',
-    'billing_address_state',
-    'billing_address_city',
-    'billing_address_zipcode'
-    ];
-
 register.hasFieldWithError = false;
 register.hasPaymentFieldWithError = false;
 register.hasBillingAddressFieldWithError = false;
@@ -771,22 +741,6 @@ register.loading_out = function() {
     $('.data-loading').addClass('hidden');
     $('html, body').css('overflow', 'scroll');
 }
-
-/*
-
-fieldsIds.forEach(item => {
-    $('#' + item).val('aaa@aaa.aaa');
-});
-
-paymentFieldsIds.forEach(item => {
-    $('#' + item).val('aaa');
-});
-
-billingAddressFieldsIds.forEach(item => {
-    $('#' + item).val('aaa');
-});
-
-*/
 
 // ✅ 3 dígitos no campo cvv
 // ✅ deixar só números no campo credit card number
