@@ -35,7 +35,6 @@ register.hasFieldWithError = false;
 register.hasPaymentFieldWithError = false;
 register.hasBillingAddressFieldWithError = false;
 
-
 $(document).ready(function() {
     $('.amount-plus').on('click', function(){
         palladiumAmount = palladiumAmount + 1;
@@ -62,10 +61,6 @@ $(document).ready(function() {
     $("button.hamburger--collapse").click(function(){
         $(this).toggleClass("is-active");
 	});
-
-    // $('.submitbtn').on('click', function(){
-    //     registrationSubmit();
-    // });
 
     register.start();
 });
@@ -576,6 +571,8 @@ register.sendForm = function() {
             register.setPostFieldsError(response.violations);
             register.loading_out();
             return response.violations;
+        } else {
+            register.successfullyRegistered();
         }
         return response;
     })
@@ -746,12 +743,34 @@ register.loading_out = function() {
     $('html, body').css('overflow', 'scroll');
 }
 
-
 register.formatExpirationDate = function() {
     var value = $(this).val();
     var formatted = value.replace(/^(\d{4})(\d{2}).*/, '$1-$2');
 
     $(this).val(formatted);
+}
+
+register.hideForm = function() {
+    $('.container.register').addClass('hidden');
+}
+
+register.showForm = function() {
+    $('.container.register').removeClass('hidden');
+}
+
+register.hideCadetSuccess = function() {
+    $('.container.container-success').addClass('hidden');
+}
+
+register.showCadetSuccess = function() {
+    $('.container.container-success').removeClass('hidden');
+}
+
+register.successfullyRegistered = function() {
+    register.loading_out();
+    register.hideForm();
+    register.showCadetSuccess();
+    $('html, body').animate({ scrollTop: 0 }, 600);
 }
 
 // ✅ 3 dígitos no campo cvv
@@ -762,9 +781,9 @@ register.formatExpirationDate = function() {
 // ✅ Inferir o DDI de acordo com o país que o cara escolher
 
 // ✅ Máscara no campo expiration-date
+// ✅ Feedback visual de que o cadet foi cadastraco com sucesso.
 // ❌ Adicionar componente de calendário (datepicker) no campo de date of birth
 // ❌ Retirar (se necessário) os campos de billing-address
-// ❌ Feedback visual de que o cadet foi cadastraco com sucesso.
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
 // ❌ Submeter a imagem de upload
