@@ -147,7 +147,14 @@ register.configEvents = function () {
     $(document).on('keydown', '#phone_number', register.formatPhoneNumber);
     $(document).on('blur'   , '#phone_number', register.validateFormatPhoneNumber);
     $(document).on('change' , '#phone_number', register.validateFormatPhoneNumber);
-    $(document).on('change' , '#phone_number', register.validateFormatPhoneNumber);
+
+    $(document).on('keyup'  , '#cerdit_card_cvv_code', register.formatOnlyNumber);
+    $(document).on('keydown', '#cerdit_card_cvv_code', register.formatOnlyNumber);
+    $(document).on('change', '#cerdit_card_cvv_code', register.formatOnlyNumber);
+
+    $(document).on('keyup'  , '#credit_card_number', register.formatOnlyNumber);
+    $(document).on('keydown', '#credit_card_number', register.formatOnlyNumber);
+    $(document).on('change', '#credit_card_number', register.formatOnlyNumber);
 
     $(document).on('change', '#address_country', register.changeCountry)
 
@@ -540,13 +547,8 @@ register.sendForm = function() {
     var subscription_plan = subscriptionPlan;
     var plan_quantity = planQuantity;
     
-    var form_data = new FormData();
     var form_headers = new Headers();
-
     form_headers.append("Content-Type", "application/json");
-
-    form_data.append("file", bookInvoice.files[0]);
-    form_data.append("cadetSubscriptionPlan", subscriptionPlan);
 
     endpoint = `{
             "callSign": "${call_sign}",
@@ -585,7 +587,7 @@ register.sendForm = function() {
             "creditCardExpirationDate": "${cerdit_card_expiration_date}"
         }`;
 
-
+    register.loading();
     return fetch(apiPath + cadetsEndpoint,{ 
         method: 'POST',
         headers: form_headers,
@@ -598,12 +600,14 @@ register.sendForm = function() {
     .then(function(response){
         if(response.violations) {
             register.setPostFieldsError(response.violations);
+            register.loading_out();
             return response.violations;
         }
         return response;
     })
     .catch(function(err){
         console.log(err);
+        register.loading_out();
     })
 }
 
@@ -623,6 +627,7 @@ register.setPostFieldsError = function (violations) {
             $(element).parents('.form-group').first().addClass('error');
         }
     });
+    register.scrollToTheFirstFieldError();
 }
 
 register.scrollToTheFirstFieldError = function() {
@@ -739,8 +744,6 @@ register.validateFormatPhoneNumber = function() {
         $('#phone_number + small').text(invalidPhoneNumberMessageError);
         $('#phone_number').parents('.form-group').first().addClass('error');
     }
-
-    console.log(isValid);
 }
 
 register.changeCountry = function() {
@@ -748,12 +751,25 @@ register.changeCountry = function() {
     $('#phone_number').parents(".form-group").first().removeClass("error");
 
     var ddi = $(this).find(':selected').data('ddi');
-
     if(ddi != 'xxx') {
         countryDDI = '+' + ddi;
     } else {
         countryDDI = '+'
     }
+}
+
+register.formatOnlyNumber = function() {
+    $(this).val(this.value.match(/[0-9]*/));
+}
+
+register.loading = function() {
+    $('.data-loading').removeClass('hidden');
+    $('html, body').css('overflow', 'hidden');
+}
+
+register.loading_out = function() {
+    $('.data-loading').addClass('hidden');
+    $('html, body').css('overflow', 'scroll');
 }
 
 /*
@@ -771,3 +787,21 @@ billingAddressFieldsIds.forEach(item => {
 });
 
 */
+
+// ✅ 3 dígitos no campo cvv
+// ✅ deixar só números no campo credit card number
+// ✅ Adicionar o loading ao submeter o formulário.
+// ✅ Campo de telefone formatado conforme o país escolhido.
+// ✅ Scroll para o primeiro campo com erro após o POST do form.
+// ✅ Inferir o DDI de acordo com o país que o cara escolher
+// ❌ Submeter a imagem de upload
+// ❌ Máscara no campo expiration-date
+// ❌ Adicionar componente de calendário (datepicker) no campo de date of birth
+// ❌ Retirar (se necessário) os campos de billing-address
+// ❌ Feedback visual de que o cadet foi cadastraco com sucesso.
+// ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
+// ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
+// ❌ Carregar Estados/cidades dos EUA e Canadá
+//    ❌ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
+// ✅ Adicionar loading ao submeter o formulário
+
