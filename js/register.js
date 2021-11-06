@@ -126,6 +126,10 @@ register.configEvents = function () {
     $(document).on('keydown', '#credit_card_number', register.formatOnlyNumber);
     $(document).on('change', '#credit_card_number', register.formatOnlyNumber);
 
+    $(document).on('keyup'  , '#cerdit_card_expiration_date', register.formatExpirationDate);
+    $(document).on('keydown', '#cerdit_card_expiration_date', register.formatExpirationDate);
+    $(document).on('change', '#cerdit_card_expiration_date', register.formatExpirationDate);
+
     $(document).on('change', '#address_country', register.changeCountry)
 
     $('#date_of_birth').datepicker();
@@ -742,19 +746,28 @@ register.loading_out = function() {
     $('html, body').css('overflow', 'scroll');
 }
 
+
+register.formatExpirationDate = function() {
+    var value = $(this).val();
+    var formatted = value.replace(/^(\d{4})(\d{2}).*/, '$1-$2');
+
+    $(this).val(formatted);
+}
+
 // ✅ 3 dígitos no campo cvv
 // ✅ deixar só números no campo credit card number
 // ✅ Adicionar o loading ao submeter o formulário.
 // ✅ Campo de telefone formatado conforme o país escolhido.
 // ✅ Scroll para o primeiro campo com erro após o POST do form.
 // ✅ Inferir o DDI de acordo com o país que o cara escolher
-// ❌ Submeter a imagem de upload
-// ❌ Máscara no campo expiration-date
+
+// ✅ Máscara no campo expiration-date
 // ❌ Adicionar componente de calendário (datepicker) no campo de date of birth
 // ❌ Retirar (se necessário) os campos de billing-address
 // ❌ Feedback visual de que o cadet foi cadastraco com sucesso.
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
+// ❌ Submeter a imagem de upload
 // ❌ Carregar Estados/cidades dos EUA e Canadá
 //    ❌ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
 
