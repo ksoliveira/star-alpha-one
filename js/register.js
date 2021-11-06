@@ -785,7 +785,7 @@ register.successfullyRegistered = function() {
 // ✅ Máscara no campo expiration-date
 // ✅ Feedback visual de que o cadet foi cadastraco com sucesso.
 // ✅ Retirar os campos de billing-address
-// ❌ Adicionar componente de calendário (datepicker) no campo de date of birth
+// ✅ Adicionar componente de calendário (datepicker) no campo de date of birth
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
 // ❌ Submeter a imagem de upload
