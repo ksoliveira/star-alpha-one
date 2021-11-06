@@ -757,5 +757,4 @@ register.loading_out = function() {
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
 // ❌ Carregar Estados/cidades dos EUA e Canadá
 //    ❌ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
-// ✅ Adicionar loading ao submeter o formulário
 
