@@ -1,6 +1,6 @@
 var apiPath = '';
-var apiHomologacao  = 'https://api.homologation.staralphaone.space';
-var apiProd         = 'https://api.staralphaone.space';
+var apiHomologacao  = 'http://api.homologation.staralphaone.space';
+var apiProd         = 'http://api.staralphaone.space';
 
 var urlPath = window.location.href;
 
@@ -31,6 +31,7 @@ var countryDDI = '+1';
 var invalidPhoneNumberMessageError = 'Invalid phone number.';
 var defaultFieldMessageError = 'This field can not be left blank.';
 
+register.cadetSubscriptionPlans = null;
 register.hasFieldWithError = false;
 register.hasPaymentFieldWithError = false;
 register.hasBillingAddressFieldWithError = false;
@@ -495,11 +496,18 @@ register.sendForm = function() {
     var address_city = $('#address_city').val();
     var address_zipcode = $('#address_zipcode').val();
     var date_of_birth = $('#date_of_birth').val();
-    var phone_number = $('#phone_number').val();
     var email = $('#email').val();
     var password = $('#password').val();
     var address_complement = "";
-    var ddi = "";
+    
+    // Separate phone number and ddi
+    var phone = $('#phone_number').val();
+    var ddi = $('#address_country').find(':selected').data('ddi');
+    ddi = '+' + ddi;
+    var phone_number = phone.split(ddi + ' ');
+    if(phone_number.length > 1) {
+        phone_number = phone_number[1];
+    }
 
     // paymentFields
     var credit_card_holdername = $('#credit_card_holdername').val();
@@ -513,6 +521,8 @@ register.sendForm = function() {
     var billing_address_state = $('#billing_address_state').val();
     var billing_address_city = $('#billing_address_city').val();
     var billing_address_zipcode = $('#billing_address_zipcode').val();
+
+    // type: billing or shipping
 
     // About Plan
     var subscription_plan = subscriptionPlan;
@@ -574,12 +584,15 @@ register.sendForm = function() {
             register.loading_out();
             return response.violations;
         } else {
-            register.successfullyRegistered();
+            if(response && response.cadetSubscriptionPlans && response.cadetSubscriptionPlans.length > 0) {
+                register.cadetSubscriptionPlans = response.cadetSubscriptionPlans[0]['@id'];
+                register.postBookInvoices();
+            }
         }
         return response;
     })
     .catch(function(err){
-        console.log(err);
+        console.log('Cadet subscription error.', err);
         register.loading_out();
     })
 }
@@ -662,39 +675,33 @@ register.setPlanPrices = function(plans) {
 
 register.postBookInvoices = function() {
 
-    var bookInvoice = document.getElementById('bookInvoice');;
-    var form_data = new FormData();
-    var form_headers = new Headers();
+    if(register.cadetSubscriptionPlans && uploadRequired) {
+        var bookInvoice = document.getElementById('bookInvoice');
+        var form_data = new FormData();
+        form_data.append("file", bookInvoice.files[0]);
+        form_data.append("cadetSubscriptionPlan", register.cadetSubscriptionPlans);
 
-    form_headers.append("Content-Type", "multipart/form-data");
-
-    form_data.append("file", bookInvoice.files[0]);
-    form_data.append("cadetSubscriptionPlan", subscriptionPlan);
-
-    return fetch(apiPath + bookInvoicesEndpoint,{ 
-            method: 'POST',
-            mode: 'cors',
-            credentials: "same-origin",
-            headers: form_headers,
-            body: form_data
+        $.ajax({
+            url: apiPath + bookInvoicesEndpoint,
+            data: form_data,
+            type: 'POST',
+            contentType: false,
+            processData: false,
         })
-        .then(function(response){
-    
-            // if(response.ok)
-            //     {
-            //         return response.text();
-            //     } else{
-            //         msg = new message();
-            //         msg.duration(5);
-            //         msg.add('<i class="icon ban red"></i> Ocorreu um erro durante o carregamento desta página');
-            //     }
-    
-            return response.json();
+        .done(function() {
+            register.loading_out();
+            register.successfullyRegistered();
         })
-        .catch(function(err){
-            console.log(err);
-        })
-    
+        .fail(function() {
+            register.loading_out();
+            $('#bookInvoice').val('');
+            register.setFieldError($('#bookInvoice'));
+            register.scrollToTheFirstFieldError();
+        });
+    } else {
+        register.loading_out();
+        register.successfullyRegistered();
+    }
 }
 
 register.formatPhoneNumber = function() {
@@ -786,9 +793,12 @@ register.successfullyRegistered = function() {
 // ✅ Feedback visual de que o cadet foi cadastraco com sucesso.
 // ✅ Retirar os campos de billing-address
 // ✅ Adicionar componente de calendário (datepicker) no campo de date of birth
+
+// ✅ Separar DDI e Phone number para inserir no POST
+// ❌ Submeter o cadastro do Cadet
+// ❌ Submeter a imagem de upload
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
-// ❌ Submeter a imagem de upload
 // ❌ Carregar Estados/cidades dos EUA e Canadá
 //    ❌ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
 
