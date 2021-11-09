@@ -31,6 +31,7 @@ var countryDDI = '+1';
 var invalidPhoneNumberMessageError = 'Invalid phone number.';
 var defaultFieldMessageError = 'This field can not be left blank.';
 
+register.usaStatesAndCities = null;
 register.cadetSubscriptionPlans = null;
 register.hasFieldWithError = false;
 register.hasPaymentFieldWithError = false;
@@ -75,6 +76,7 @@ $.fn.digits = function(){
 register.start = function() {
     register.configEvents();
     register.getHash();
+    register.setUnitedStatesFields();
     register.getSubscriptionPlans()
         .then(function(plans) {
             if(plans) {
@@ -95,6 +97,8 @@ register.configEvents = function () {
     $(document).on("blur", ".billing-address-required", register.billingAddressRequiredFields);
 
     $(document).on("change", "#date_of_birth", register.checkRequiredFields);
+
+    $(document).on("change", "#address_state", register.loadCities);
 
     $(document).on("focus", ".register-required", register.unsetSpecificFieldError);
     $(document).on("focus", ".payment-required", register.unsetSpecificFieldError);
@@ -519,12 +523,37 @@ register.sendForm = function() {
     var cerdit_card_expiration_date = $('#cerdit_card_expiration_date').val();
     var cerdit_card_cvv_code = $('#cerdit_card_cvv_code').val();
 
-    // billingPaymentFields
-    var billing_address_street = $('#billing_address_street').val();
-    var billing_address_country = $('#billing_address_country').val();
-    var billing_address_state = $('#billing_address_state').val();
-    var billing_address_city = $('#billing_address_city').val();
-    var billing_address_zipcode = $('#billing_address_zipcode').val();
+    var addresses = `
+        {
+            "street": "${address_street}",
+            "complement": "${address_complement}",
+            "city": "${address_city}",
+            "state": "${address_state}",
+            "country": "${address_country}",
+            "postalCode": "${address_zipcode}",
+            "type": "shipping"
+        }
+    `;
+    
+    /*if(billingAddressRequired) {
+        var billing_address_street = $('#billing_address_street').val();
+        var billing_address_country = $('#billing_address_country').val();
+        var billing_address_state = $('#billing_address_state').val();
+        var billing_address_city = $('#billing_address_city').val();
+        var billing_address_zipcode = $('#billing_address_zipcode').val();
+    
+        addresses += `,
+        {
+            "street": "${billing_address_street}",
+            "complement": "",
+            "city": "${billing_address_city}",
+            "state": "${billing_address_state}",
+            "country": "${billing_address_country}",
+            "postalCode": "${billing_address_zipcode}",
+            "type": "billing"
+        }
+    `;
+    }*/
 
     // type: billing or shipping
 
@@ -545,14 +574,7 @@ register.sendForm = function() {
                 "password": "${password}"
             },
             "addresses": [
-                {
-                    "street": "${address_street}",
-                    "complement": "${address_complement}",
-                    "city": "${address_city}",
-                    "state": "${address_state}",
-                    "country": "${address_country}",
-                    "postalCode": "${address_zipcode}"
-                }
+                ${addresses}
             ],
             "contacts": [
                 {
@@ -731,6 +753,12 @@ register.validateFormatPhoneNumber = function() {
 }
 
 register.changeCountry = function() {
+    var fieldValue = $(this).val();
+
+    if(fieldValue == 'United States of America') {
+        register.setUnitedStatesFields();
+    }
+
     $('#phone_number').val('');
     $('#phone_number').parents(".form-group").first().removeClass("error");
 
@@ -786,6 +814,49 @@ register.successfullyRegistered = function() {
     $('html, body').animate({ scrollTop: 0 }, 600);
 }
 
+register.setUnitedStatesFields = function() {
+    var json = 'js/eua.json';
+
+    return fetch(json, {
+        method: "GET",
+        mode: "cors",
+        credentials: "same-origin",
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((res) => {
+            if(res) {
+                register.usaStatesAndCities = res;
+                return plans;
+            }
+            return false;
+        })
+        .catch(function (err) {
+            console.log(err);
+    });
+}
+
+register.loadCities = function () {
+    var state = $(this).val();
+    var cities = register.usaStatesAndCities[state];
+
+    var options = '';
+    $('#address_city').empty();
+    $('#address_city').append($(document.createElement('option')).prop({
+        value: '',
+        text: 'City'
+    }))
+    cities.forEach(city => {
+        $('#address_city').append($(document.createElement('option')).prop({
+            value: city,
+            text: city
+        }))
+    });
+
+    $
+}
+
 // ✅ 3 dígitos no campo cvv
 // ✅ deixar só números no campo credit card number
 // ✅ Adicionar o loading ao submeter o formulário.
@@ -801,8 +872,7 @@ register.successfullyRegistered = function() {
 // ✅ Separar DDI e Phone number para inserir no POST
 // ✅ Submeter o cadastro do Cadet
 // ✅ Submeter a imagem de upload
-// ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
-// ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
+// ✅ Enviar billing address no payload com o type "billing" e p shipping como "shipping"
 // ❌ Carregar Estados/cidades dos EUA e Canadá
 //    ❌ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
 
