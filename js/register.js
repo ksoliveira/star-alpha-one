@@ -203,9 +203,13 @@ register.checkRequiredFields = function () {
         register.setFieldError(this);
 
         if (fieldId == "bookInvoice") {
-            register.setFieldError($('.file-ticket'));
+            if (uploadRequired) {
+                register.setFieldError($('.file-ticket'));
+                register.setRegisterFieldError();
+            }
+        } else {
+            register.setRegisterFieldError();
         }
-        register.setRegisterFieldError();
     } else if (fieldId == "email") {
         var validEmail = register.isValidEmail(fieldValue);
 
@@ -795,8 +799,8 @@ register.successfullyRegistered = function() {
 // ✅ Adicionar componente de calendário (datepicker) no campo de date of birth
 
 // ✅ Separar DDI e Phone number para inserir no POST
-// ❌ Submeter o cadastro do Cadet
-// ❌ Submeter a imagem de upload
+// ✅ Submeter o cadastro do Cadet
+// ✅ Submeter a imagem de upload
 // ❌ Mostrar mensagem de mínimo de 16 dígitos no campo credit card number
 // ❌ Mostrar mensagem de exatamente 3 dígitos no campo cvv
 // ❌ Carregar Estados/cidades dos EUA e Canadá
