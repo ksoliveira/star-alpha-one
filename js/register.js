@@ -98,8 +98,6 @@ register.configEvents = function () {
 
     $(document).on("change", "#date_of_birth", register.checkRequiredFields);
 
-    $(document).on("change", "#address_state", register.loadCities);
-
     $(document).on("focus", ".register-required", register.unsetSpecificFieldError);
     $(document).on("focus", ".payment-required", register.unsetSpecificFieldError);
     $(document).on("focus", ".billing-address-required", register.unsetSpecificFieldError);
@@ -132,7 +130,11 @@ register.configEvents = function () {
 
     $('#date_of_birth').mask('99/99/9999');
 
-    $(document).on('change', '#address_country', register.changeCountry)
+    $(document).on('change', '#address_country', register.changeCountry);
+    $(document).on("change", "#address_state", register.loadAddressCities);
+
+    $(document).on('change', '#billing_address_country', register.changeBillingCountry);
+    $(document).on("change", "#billing_address_state", register.loadBillingAddressCities);
 
     $('#date_of_birth').datepicker();
 };
@@ -765,10 +767,9 @@ register.changeCountry = function() {
     var fieldValue = $(this).val();
 
     if(fieldValue == 'United States of America') {
-        register.setUnitedStatesFields();
-        register.countryIsEUA();
+        register.shippingAddressCountryIsEUA();
     } else {
-        register.countryIsNotEUA();
+        register.shippingAddressCountryIsNotEUA();
     }
 
     $('#phone_number').val('');
@@ -779,6 +780,16 @@ register.changeCountry = function() {
         countryDDI = '+' + ddi;
     } else {
         countryDDI = '+'
+    }
+}
+
+register.changeBillingCountry = function() {
+    var fieldValue = $(this).val();
+
+    if(fieldValue == 'United States of America') {
+        register.billingAddressCountryIsEUA();
+    } else {
+        register.billingAddressCountryIsNotEUA();
     }
 }
 
@@ -849,11 +860,10 @@ register.setUnitedStatesFields = function() {
     });
 }
 
-register.loadCities = function () {
+register.loadAddressCities = function () {
     var state = $(this).val();
     var cities = register.usaStatesAndCities[state];
 
-    var options = '';
     $('#address_city').empty();
     $('#address_city').append($(document.createElement('option')).prop({
         value: '',
@@ -867,7 +877,24 @@ register.loadCities = function () {
     });
 }
 
-register.countryIsEUA = function() {
+register.loadBillingAddressCities = function () {
+    var state = $(this).val();
+    var cities = register.usaStatesAndCities[state];
+
+    $('#billing_address_city').empty();
+    $('#billing_address_city').append($(document.createElement('option')).prop({
+        value: '',
+        text: 'City'
+    }))
+    cities.forEach(city => {
+        $('#billing_address_city').append($(document.createElement('option')).prop({
+            value: city,
+            text: city
+        }))
+    });
+}
+
+register.shippingAddressCountryIsEUA = function() {
     $('#address_city').removeClass('hidden');
     $('#address_city').addClass('register-required');
     
@@ -880,10 +907,10 @@ register.countryIsEUA = function() {
     $('#address_state_plain').addClass('hidden');
     $('#address_state_plain').removeClass('register-required');
 
-    register.resetStateAndCitValues();
+    register.resetShippingStateAndCitValues();
 }
 
-register.countryIsNotEUA = function() {
+register.shippingAddressCountryIsNotEUA = function() {
     $('#address_city').addClass('hidden');
     $('#address_city').removeClass('register-required');
     
@@ -896,10 +923,10 @@ register.countryIsNotEUA = function() {
     $('#address_state_plain').removeClass('hidden');
     $('#address_state_plain').addClass('register-required');
     
-    register.resetStateAndCitValues();
+    register.resetShippingStateAndCitValues();
 }
 
-register.resetStateAndCitValues = function () {
+register.resetShippingStateAndCitValues = function () {
     $('#address_city').val('');
     $('#address_city_plain').val('');
     register.unsetFieldError($('#address_city'));
@@ -909,6 +936,51 @@ register.resetStateAndCitValues = function () {
     $('#address_state_plain').val('');
     register.unsetFieldError($('#address_state'));
     register.unsetFieldError($('#address_state_plain'));
+    
+};
+
+register.billingAddressCountryIsEUA = function() {
+    $('#billing_address_city').removeClass('hidden');
+    $('#billing_address_city').addClass('billing-address-required');
+    
+    $('#billing_address_city_plain').addClass('hidden');
+    $('#billing_address_city_plain').removeClass('billing-address-required');
+
+    $('#billing_address_state').removeClass('hidden');
+    $('#billing_address_state').addClass('billing-address-required');
+
+    $('#billing_address_state_plain').addClass('hidden');
+    $('#billing_address_state_plain').removeClass('billing-address-required');
+
+    register.resetBillingStateAndCitValues();
+}
+
+register.billingAddressCountryIsNotEUA = function() {
+    $('#billing_address_city').addClass('hidden');
+    $('#billing_address_city').removeClass('billing-address-required');
+    
+    $('#billing_address_city_plain').removeClass('hidden');
+    $('#billing_address_city_plain').addClass('billing-address-required');
+    
+    $('#billing_address_state').addClass('hidden');
+    $('#billing_address_state').removeClass('billing-address-required');
+    
+    $('#billing_address_state_plain').removeClass('hidden');
+    $('#billing_address_state_plain').addClass('billing-address-required');
+    
+    register.resetBillingStateAndCitValues();
+}
+
+register.resetBillingStateAndCitValues = function () {
+    $('#billing_address_city').val('');
+    $('#billing_address_city_plain').val('');
+    register.unsetFieldError($('#billing_address_city'));
+    register.unsetFieldError($('#billing_address_city_plain'));
+
+    $('#billing_address_state').val('');
+    $('#billing_address_state_plain').val('');
+    register.unsetFieldError($('#billing_address_state'));
+    register.unsetFieldError($('#billing_address_state_plain'));
     
 };
 
@@ -931,8 +1003,8 @@ register.resetStateAndCitValues = function () {
 // ✅ Enviar billing address no payload com o type "billing" e p shipping como "shipping"
 
 // ✅ Carregar Estados/cidades dos EUA
-// ✅ Tornar o campo estado como texto quando nao for Estados unidos nem canadá
-
-// ❌ Billing - Carregar Estados/cidades dos EUA
-// ❌ Billing - Tornar o campo estado como texto quando nao for Estados unidos nem canadá
+// ✅ Tornar o campo omeestado como texto quando nao for Estados Unidos
+// ✅ Billing - Carregar Estados/cidades dos EUA
+// ✅ Billing - Tornar o campo estado como texto quando nao for Estados Unidos
+// ❌ Adicionar o campo complement nos dois endereços
 
