@@ -36,9 +36,13 @@ function resizeHeaderOnScroll() {
     if (distanceY > shrinkOn) {
         headerEl.classList.add("smaller");
         sliderMargin.addClass("active-static-margin");
+        $('.container-home').addClass('smaller-header');
+        $('.background-provisorio').addClass('smaller-header');
     } else {
         headerEl.classList.remove("smaller");
         sliderMargin.removeClass("active-static-margin");
+        $('.container-home').removeClass('smaller-header');
+        $('.background-provisorio').removeClass('smaller-header');
     }
 }
 
